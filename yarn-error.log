@@ -1,0 +1,46 @@
+Arguments: 
+  /Users/sysner02/.nvm/versions/node/v15.11.0/bin/node /Users/sysner02/.nvm/versions/node/v15.11.0/bin/yarn start
+
+PATH: 
+  /Users/sysner02/.nvm/versions/node/v15.11.0/bin:/Users/sysner02/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  15.11.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/sysner02/Desktop/typechain/package.json: Unexpected token / in JSON at position 339
+      at JSON.parse (<anonymous>)
+      at /Users/sysner02/.nvm/versions/node/v15.11.0/lib/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/Users/sysner02/.nvm/versions/node/v15.11.0/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /Users/sysner02/.nvm/versions/node/v15.11.0/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "typechain",
+    "version": "1.0.0",
+    "description": "Learning Typescript by making a Blockchain with it",
+    "main": "index.js",
+    "repository": "https://github.com/nomadcoders/typechain",
+    "author": "20jun <ex_xe@naver.com>",
+    "license": "MIT",
+    
+    "scripts" : {
+      "start" : "node index.js",
+      "prestart" : "tsc"
+    }
+  }
+  
+  // prestart 다음에 start 실행
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
