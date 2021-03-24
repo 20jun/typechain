@@ -1,29 +1,65 @@
 "use strict";
-// 인터페이스는 Javascript에서는 작동하지 않고, Typescript에서만 작동함!
-// interface Human {
-//     name : string;
-//     age : number;
-//     gender : string;
-// }
 Object.defineProperty(exports, "__esModule", { value: true });
-class Human {
-    // constructor(method) : class 내에서 객체를 생성하고 초기화하기 위한 특별한 method
-    // 클래스가 시작할 때마다 호출(클래스로부터 객체를 만들 때 마다)
-    constructor(name, age, gender) {
-        // 같은 속성의 이름을 argument로 줌
-        // 클래스 속성의 이름인 name은 생성자(constructor)의 name과 같다
-        this.name = name;
-        this.age = age;
-        this.gender = gender;
+const CryptoJS = require("crypto-js");
+class Block {
+    constructor(index, hash, previousHash, data, timestamp) {
+        this.index = index;
+        this.hash = hash;
+        this.previousHash = previousHash;
+        this.data = data;
+        this.timestamp = timestamp;
     }
 }
-const lynn = new Human('Lynn', 18, 'female');
-const jun = new Human('jun', 20, 'male');
-// sayHi(parameter?) <<== 처럼 파라미터 뒤에 ? 붙이면 선택적(넣어도 되고, 안넣어도 되고~)
-//                    arguments의 유형                         반환의 유형
-const sayHi = (person) => {
-    return `Hello ${person.name}, you are ${person.age}, you are a ${person.gender}!`;
+Block.calculateBlockHash = (index, previousHash, timestamp, data) => CryptoJS.SHA256(index + previousHash + timestamp + data).toString();
+Block.validateStructure = (aBlock) => typeof aBlock.index === "number" &&
+    typeof aBlock.hash === "string" &&
+    typeof aBlock.previousHash === "string" &&
+    typeof aBlock.timestamp === "number" &&
+    typeof aBlock.data === "string";
+const genesisBlock = new Block(0, "20202020", "", "Hello", 123456);
+// 쉽게 설명하면, 블록체인은 하나의 장부입니다.
+// 거래를 할 때마다 장부 안의 내역을 기록하는데,
+// 장부 안의 거래 내역을 블록이라고 합니다.
+// 새로운 거래가 생길때 마다 하나의 블록이 생기는데,
+// 이러한 블록으로 이루어진 장부를 다른 사람들과 공유하는 것이 블록체인입니다.
+let blockchain = [genesisBlock];
+const getBlockchain = () => blockchain;
+const getLatestBlock = () => blockchain[blockchain.length - 1];
+const getNewTimeStamp = () => Math.round(new Date().getTime() / 1000);
+const createNewBlock = (data) => {
+    const previousBlock = getLatestBlock();
+    const newIndex = previousBlock.index + 1;
+    const newTimestamp = getNewTimeStamp();
+    const newHash = Block.calculateBlockHash(newIndex, previousBlock.hash, newTimestamp, data);
+    const newBlock = new Block(newIndex, newHash, previousBlock.hash, data, newTimestamp);
+    addBlock(newBlock);
+    return newBlock;
 };
-// void는 빈 공간 같은거
-console.log(sayHi(jun));
+const getHashforBlock = (aBlock) => Block.calculateBlockHash(aBlock.index, aBlock.previousHash, aBlock.timestamp, aBlock.data);
+const isBlockValid = (candidateBlock, previousBlock) => {
+    if (!Block.validateStructure(candidateBlock)) {
+        return false;
+    }
+    else if (previousBlock.index + 1 !== candidateBlock.index) {
+        return false;
+    }
+    else if (previousBlock.hash !== candidateBlock.previousHash) {
+        return false;
+    }
+    else if (getHashforBlock(candidateBlock) !== candidateBlock.hash) {
+        return false;
+    }
+    else {
+        return true;
+    }
+};
+const addBlock = (candidateBlock) => {
+    if (isBlockValid(candidateBlock, getLatestBlock())) {
+        blockchain.push(candidateBlock);
+    }
+};
+createNewBlock("second block");
+createNewBlock("third block");
+createNewBlock("fourth block");
+console.log(blockchain);
 //# sourceMappingURL=index.js.map
